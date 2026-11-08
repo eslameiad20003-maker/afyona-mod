@@ -1,0 +1,25 @@
+name: Build Tweak
+on: [push, workflow_dispatch]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Prepare Theos
+        uses: theos/theos-action@v1
+
+      - name: Unzip Project
+        run: unzip SporclePartyMod.zip -d project_files
+
+      - name: Compile
+        run: |
+          cd project_files
+          make THEOS_PACKAGE_SCHEME=rootless FINALPACKAGE=1
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: Afyona-Dylib
+          path: project_files/.theos/obj/*.dylib
